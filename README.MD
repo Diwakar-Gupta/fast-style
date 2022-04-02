@@ -1,2 +1,2 @@
-# Bank Loan Predict
-Live at:  https://bank-loan-predict.herokuapp.com/
+# Fast Style
+Live at:  https://fast-style.herokuapp.com/

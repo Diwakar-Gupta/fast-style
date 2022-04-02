@@ -1,10 +1,11 @@
 import numpy as np
 import tensorflow as tf
 import tensorflow_hub as hub
-
+from PIL import Image
 import streamlit as st
-
 from tempfile import NamedTemporaryFile
+
+st.write('https://github.com/Diwakar-Gupta/fast-style')
 
 def crop_center(image):
   """Return a croped squared image"""
@@ -40,22 +41,32 @@ content_img_size = (output_image_size, output_image_size)
 
 getter1, getter2 = st.columns(2)
 
-content_image = getter1.file_uploader('Content Image')
-style_image = getter2.file_uploader('Style Image')
+content_image = getter1.file_uploader('Content Image in jpeg format')
+style_image = getter2.file_uploader('Style Image in jpeg format')
 style_img_size = (256, 256)
 
-if st.button('Process'):
-    temp_file = NamedTemporaryFile(delete=False)
+content, style, mixed = st.columns(3)
+
+if content_image is not None:
+    image = Image.open(content_image)
+    content.image(image)
+
+if style_image is not None:
+    image = Image.open(style_image)
+    style.image(image)
+
+if content_image != None and style_image != None and  st.button('Generate Style'):
+    temp_file = NamedTemporaryFile(delete=True)
     temp_file.write(content_image.getvalue())
     content_image = load_image(temp_file.name)
 
-    temp_file = NamedTemporaryFile(delete=False)
+    temp_file = NamedTemporaryFile(delete=True)
     temp_file.write(style_image.getvalue())
     style_image = load_image(temp_file.name)
 
     outputs = get_hub()(content_image, style_image)
     sytlized_image = outputs[0]
 
-    st.image(sytlized_image.numpy())
+    mixed.image(sytlized_image.numpy())
 else:
     st.write('Result Image')
